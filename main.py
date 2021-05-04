@@ -62,7 +62,15 @@ class botSaber:
         for alunos in nomes:
 
             print(alunos, end=' -----> ')
-            FaltasRegistradas[alunos] = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
+            entrada = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
+
+            while entrada != 'P' and entrada != 'F' and entrada != 'N':
+                print("Entrada invalida!")
+                print(alunos, end=' -----> ')
+                entrada = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
+
+            FaltasRegistradas[alunos] = entrada
+
         
         return FaltasRegistradas
 
@@ -71,7 +79,7 @@ class botSaber:
 
         print("#### Suas disciplinas ####")
         for i in range(self.NumeroDeDisciplinas-1):
-            print(i+1, end=" ")
+            print(i+1, end=" ---> ")
             print(listaDisciplinas[i])
 
         turmaSelecionada = int(input("Digite o numero da turma: "))
@@ -210,7 +218,7 @@ class botSaber:
 
     def gerarPlanilha(self, save):
 
-        planilha = dados_planilha.Planilha(save, "03/03/2021")
+        planilha = dados_planilha.Planilha(save)
         planilha.getItemsDict()
         planilha.organizarData()
         planilha.gerarDataFrame()
@@ -256,6 +264,9 @@ class botSaber:
                 self.controleDeFaltas(FaltasRegistradas, driver, cargaHoraria[turmaSelecionada-1])
 
             save = self.registrosSalvos(FaltasRegistradas)
+
+            if(menus.menuSave() == 'S'):
+                self.gerarPlanilha(save)
             
             
             op = menus.menuMenuPrincipal()
@@ -266,12 +277,12 @@ class botSaber:
             else:
                 break
         
-        self.gerarPlanilha(save)
+        
 
-
-
-login = login_usuario.login_saber
 menus = menuAux
+
+menus.menuLogin()
+login = login_usuario.login_saber
 
 menus.menuEntrada()
 
