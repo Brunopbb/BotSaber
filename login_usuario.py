@@ -1,3 +1,7 @@
+import menuAux
+
+menuAux.menuLogin()
+
 
 usuario = input("Digite seu usuario: ")
 senha = input("Digite sua senha: ")

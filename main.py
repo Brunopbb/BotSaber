@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import getpass
+import os
 import time
 
 import dados_planilha
@@ -9,26 +11,42 @@ import menuAux
 
 class botSaber:
 
+    
 
     def __init__(self, login, senha):
+
+        
 
         self.login = login
         self.senha = senha
         self.NumeroDeDisciplinas = 0
-        self.browser = webdriver.Chrome(executable_path="/home/bruno/Documentos/BotSaber/chromedriver")
 
+        user = getpass.getuser()
+        try:
+            options = webdriver.ChromeOptions()
+            options.add_experimental_option('excludeSwitches', ['enable-logging'])
+            self.browser = webdriver.Chrome(executable_path='C:\\Users\\'+str(user)+'\\Desktop\\BotSaber\\chromedriver.exe', options=options)
+            
+        except Exception:
+            pass
+    
 
     def loginSistema(self):
-        driver = self.browser
 
-        driver.get("http://saber.pb.gov.br/users/sign_in")
-        campo_usuario = driver.find_element_by_xpath("//*[@id='user_email']")
-        campo_usuario.send_keys(self.login)
-        time.sleep(1)
-        campo_senha = driver.find_element_by_xpath("//*[@id='user_password']")
-        campo_senha.click()
-        campo_senha.send_keys(self.senha)
-        campo_senha.send_keys(Keys.ENTER)
+        try:
+            driver = self.browser
+
+            driver.get("http://saber.pb.gov.br/users/sign_in")
+            campo_usuario = driver.find_element_by_xpath("//*[@id='user_email']")
+            campo_usuario.send_keys(self.login)
+            time.sleep(1)
+            campo_senha = driver.find_element_by_xpath("//*[@id='user_password']")
+            campo_senha.click()
+            campo_senha.send_keys(self.senha)
+            campo_senha.send_keys(Keys.ENTER)
+        except Exception:
+            pass
+        
 
     
     def GetNDisciplinas(self):
@@ -55,19 +73,24 @@ class botSaber:
         
     def registrarFaltas(self, nomes, turmaSelecionada, listaDisciplinas):
         
+        os.system("cls||clear")
         FaltasRegistradas = {}
 
         FaltasRegistradas["Turma"] = listaDisciplinas[turmaSelecionada-1]
  
         for alunos in nomes:
-
+            
+            print("----------------------------------------------------------------")
             print(alunos, end=' -----> ')
             entrada = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
+            
 
             while entrada != 'P' and entrada != 'F' and entrada != 'N':
                 print("Entrada invalida!")
+                print("----------------------------------------------------------------")
                 print(alunos, end=' -----> ')
                 entrada = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
+                
 
             FaltasRegistradas[alunos] = entrada
 
@@ -76,7 +99,7 @@ class botSaber:
 
     
     def menu(self, listaDisciplinas):
-
+        os.system("cls||clear")
         print("#### Suas disciplinas ####")
         for i in range(self.NumeroDeDisciplinas-1):
             print(i+1, end=" ---> ")
@@ -229,6 +252,8 @@ class botSaber:
         driver = self.browser
         save = []
         flag = False
+        os.system('cls||clear')
+        print("Aguarde...")
         
         while True:
             
@@ -246,6 +271,10 @@ class botSaber:
 
             driver.find_element_by_xpath("/html/body/div[5]/div/div[1]/ul/li[2]/a").click()
             time.sleep(1)
+
+            os.system('cls||clear')
+
+            print("Aguarde...")
 
             self.setFaltas(driver, cargaHoraria, turmaSelecionada)
 
@@ -277,21 +306,19 @@ class botSaber:
             else:
                 break
         
-        
-
+    
 menus = menuAux
 
-menus.menuLogin()
+
 login = login_usuario.login_saber
-
-menus.menuEntrada()
-
 myBot = botSaber(login["usuario"], login["senha"])
 myBot.loginSistema()
 
+
 while True:
  
-
+    os.system('cls||clear')
+    menus.menuEntrada()
     opcao = input("REGISTRAR FALTAS DAS TURMAS? SIM(S), NÃO(N): ").upper()
 
     if(opcao == 'S'):

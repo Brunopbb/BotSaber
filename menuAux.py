@@ -3,15 +3,17 @@ import os
 
 def menuEntrada():
 
-    os.system('cls||clear')
+    #os.system('cls||clear')
     print("#################################################")
     print("SISTEMA DE CONTROLE DE FALTAS - SABER")
     print("#################################################")
     time.sleep(2)
 
+
+
 def menuLogin():
 
-    #os.system('cls||clear')
+    os.system('cls||clear')
     print("#################################################")
     print("INSIRA SEUS DADOS PARA FAZER LOGIN NO SISTEMA")
     print("#################################################")
