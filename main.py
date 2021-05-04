@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from sys import exit
 import getpass
 import os
 import time
@@ -11,24 +12,26 @@ import menuAux
 
 class botSaber:
 
-    
 
     def __init__(self, login, senha):
 
-        
 
         self.login = login
         self.senha = senha
         self.NumeroDeDisciplinas = 0
+        self.browser = None
+        
+
+    def setBrowser(self):
 
         user = getpass.getuser()
-        try:
-            options = webdriver.ChromeOptions()
-            options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            self.browser = webdriver.Chrome(executable_path='C:\\Users\\'+str(user)+'\\Desktop\\BotSaber\\chromedriver.exe', options=options)
+
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        browser = webdriver.Chrome(executable_path='C:\\Users\\'+str(user)+'\\Desktop\\BotSaber\\chromedriver.exe', options=options)
             
-        except Exception:
-            pass
+        self.browser = browser
+
     
 
     def loginSistema(self):
@@ -44,10 +47,10 @@ class botSaber:
             campo_senha.click()
             campo_senha.send_keys(self.senha)
             campo_senha.send_keys(Keys.ENTER)
+
         except Exception:
             pass
         
-
     
     def GetNDisciplinas(self):
 
@@ -70,6 +73,12 @@ class botSaber:
             nomes.append(driver.find_element_by_xpath("/html/body/div[5]/div/form/div[3]/div["+str(i)+"]/div[1]").text)
 
         return nomes
+
+    def sair(self):
+        self.browser.quit()
+
+    def salvarFaltasSistema(self, driver):
+        driver.find_element_by_xpath("/html/body/div[5]/div/form/div[4]/div/button").click()
         
     def registrarFaltas(self, nomes, turmaSelecionada, listaDisciplinas):
         
@@ -80,14 +89,14 @@ class botSaber:
  
         for alunos in nomes:
             
-            print("----------------------------------------------------------------")
+            print("---------------------------------------------------------------------------------------")
             print(alunos, end=' -----> ')
             entrada = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
             
 
             while entrada != 'P' and entrada != 'F' and entrada != 'N':
                 print("Entrada invalida!")
-                print("----------------------------------------------------------------")
+                print("---------------------------------------------------------------------------------------")
                 print(alunos, end=' -----> ')
                 entrada = input("Presente(P), Ausente(F), Não Registrado(N): ").upper()
                 
@@ -193,11 +202,7 @@ class botSaber:
             count+=1
 
             
-            
-
     def controleDeFaltas(self, nomes, driver, cargaHoraria):
-
-        
 
         if(cargaHoraria == '4'):
             self.duasAulas(nomes, driver)
@@ -296,6 +301,7 @@ class botSaber:
 
             if(menus.menuSave() == 'S'):
                 self.gerarPlanilha(save)
+                self.salvarFaltasSistema(driver)
             
             
             op = menus.menuMenuPrincipal()
@@ -309,11 +315,11 @@ class botSaber:
     
 menus = menuAux
 
-
 login = login_usuario.login_saber
 myBot = botSaber(login["usuario"], login["senha"])
+myBot.setBrowser()
 myBot.loginSistema()
-
+        
 
 while True:
  
@@ -324,9 +330,12 @@ while True:
     if(opcao == 'S'):
         myBot.menuPrincipal(menus)
     else:
+        print("Encerrando...")
+        time.sleep(2)
+        myBot.sair()
+        exit()
         break
 
-print("Encerrando...")
-time.sleep(2)
+
 
 
