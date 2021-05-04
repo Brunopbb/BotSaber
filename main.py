@@ -1,10 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+
+import dados_planilha
 import login_usuario
 import menuAux
-
-
 
 
 class botSaber:
@@ -15,7 +15,7 @@ class botSaber:
         self.login = login
         self.senha = senha
         self.NumeroDeDisciplinas = 0
-        self.browser = webdriver.Chrome(executable_path="/home/bruno/BotSaber/chromedriver")
+        self.browser = webdriver.Chrome(executable_path="/home/bruno/Documentos/BotSaber/chromedriver")
 
 
     def loginSistema(self):
@@ -66,8 +66,7 @@ class botSaber:
         
         return FaltasRegistradas
 
-    # podia ser um atributo > listaDisciplinas
-    # pq ai posso pegar ele por um get
+    
     def menu(self, listaDisciplinas):
 
         print("#### Suas disciplinas ####")
@@ -75,7 +74,7 @@ class botSaber:
             print(i+1, end=" ")
             print(listaDisciplinas[i])
 
-        turmaSelecionada = input("Digite o numero da turma: ")
+        turmaSelecionada = int(input("Digite o numero da turma: "))
         return turmaSelecionada
 
     def getInfoDisciplinas(self):
@@ -85,11 +84,8 @@ class botSaber:
         cargaHoraria = []
         Nmatriculas = []
         
-
         num = self.NumeroDeDisciplinas
 
-        
-        
         for NumTexto in range(1, num):
             
             listaDisciplinas.append(driver.find_element_by_xpath("/html/body/div[5]/div/div[2]/div/div[1]/div/table/tbody/tr["+str(NumTexto)+"]/td[3]").text+" "+
@@ -97,8 +93,7 @@ class botSaber:
 
             cargaHoraria.append(driver.find_element_by_xpath("/html/body/div[5]/div/div[2]/div/div[1]/div/table/tbody/tr["+str(NumTexto)+"]/td[7]").text)
             Nmatriculas.append(driver.find_element_by_xpath("/html/body/div[5]/div/div[2]/div/div[1]/div/table/tbody/tr["+str(NumTexto)+"]/td[9]").text)
-            #/html/body/div[5]/div/div[2]/div/div[1]/div/table/tbody/tr[1]/td[7]
-            #/html/body/div[5]/div/div[2]/div/div[1]/div/table/tbody/tr[2]/td[7]
+            
 
         return listaDisciplinas, cargaHoraria, Nmatriculas
 
@@ -171,8 +166,7 @@ class botSaber:
 
     def controleDeFaltas(self, nomes, driver, cargaHoraria):
 
-        print(nomes)
-        print(cargaHoraria)
+        
 
         if(cargaHoraria == '4'):
             self.duasAulas(nomes, driver)
@@ -214,6 +208,14 @@ class botSaber:
 
         return turmasRegistradasSaber
 
+    def gerarPlanilha(self, save):
+
+        planilha = dados_planilha.Planilha(save, "03/03/2021")
+        planilha.getItemsDict()
+        planilha.organizarData()
+        planilha.gerarDataFrame()
+        planilha.save()
+
     def menuPrincipal(self, menus):
 
         driver = self.browser
@@ -221,7 +223,6 @@ class botSaber:
         flag = False
         
         while True:
-            
             
             driver.find_element_by_xpath("/html/body/div[3]/div/div/div[2]/div/div/ul/li[2]/a").click()
 
@@ -243,13 +244,12 @@ class botSaber:
             nomeAlunos = self.getNomeAlunos(turmaSelecionada, Nmatriculas, driver)
             time.sleep(1)
 
-            if(flag):
+            if(flag):   
                 
-                
+                save[0]['Turma'] = listaDisciplinas[turmaSelecionada-1]
                 self.controleDeFaltas(save[0], driver, cargaHoraria[turmaSelecionada-1])
                 save = []
                 
-            
             else:
 
                 FaltasRegistradas = self.registrarFaltas(nomeAlunos, turmaSelecionada, listaDisciplinas)
@@ -257,7 +257,7 @@ class botSaber:
 
             save = self.registrosSalvos(FaltasRegistradas)
             
-
+            
             op = menus.menuMenuPrincipal()
 
             if(op == 'S'):
@@ -265,6 +265,8 @@ class botSaber:
                 flag = True
             else:
                 break
+        
+        self.gerarPlanilha(save)
 
 
 

@@ -1,3 +1,44 @@
-d = [{'Turma': 'Informática Básica 1º ano B', 'Ana Julia Duarte Porto': 'N', 'Antônio Henrique Pereira Santos': 'N', 'Breno Ryan Costa da Silva': 'N', 'Bruna Ariardyne de Souza Barbosa': 'N', 'Cristiana dos Santos Pereira': 'N', 'Daniele Ezequiel de Jesus': 'N', 'Ellen Brenda Alves da Silva': 'N', 'Emanuelle Beatriz da Silva Venâncio': 'N', 'Gabriela do Nascimento Monteiro': 'N', 'Gisele de Souza Mendonca': 'N', 'Jefferson Breno Feitosa de Lima': 'N', 'Joao Vitor Matias Camara': 'N', 'Kelly Mirelly Firmino Diniz': 'N', 'Lays Danielle dos Santos Targino': 'N', 'Maria Gabriele Santos Benjamim': 'N', 'Mirela Felix dos Santos': 'N', 'Mirele dos Santos Lira': 'N', 'Pedro Henrique Guedes Costa Garcia': 'N', 'Rikelme de Oliveira Fernandes': 'N', 'Sandy Ashley Cirne Eloy': 'N', 'Sarah Priscila Nunes Marques': 'N', 'Sarah Soares de Araújo': 'N', 'Thalia de Oliveira Fernandes': 'N', 'Thayna Galdino Câmara Dantas': 'N', 'Valessa Bezerra Fernandes': 'N', 'Vinicius Araujo Amancio Gomes': 'N', 'Yago Alves Santos': 'N'}]
+import pandas as pd
 
-print(d[0])
+class Planilha:
+
+    def __init__(self, dicionario, data):
+        self.dicionario = dicionario
+        self.data = data
+
+    def getItemsDict(self):
+    
+        keys = []
+        values = []
+    
+        for k, v in self.dicionario[0].items():
+            keys.append(k)
+            values.append(v)
+    
+    
+        return keys, values
+    
+    def setDict(self, dicionario):
+        self.dicionario = dicionario
+
+    def getDict(self):
+        return self.dicionario
+
+
+    def gerarDataFrame(self):
+
+        return pd.DataFrame(self.organizarData())
+
+    def save(self):
+
+        self.gerarDataFrame().to_excel('saida.xlsx', index = True)
+
+    def organizarData(self):
+        
+        keys, values = self.getItemsDict()
+
+        data = {"Nome": keys[1:], "Situação": values[1:], "Turma": values[0], "Data": self.data}
+
+        return data
+
+
