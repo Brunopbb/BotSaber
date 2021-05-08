@@ -1,10 +1,11 @@
 import menuAux
+from getpass import getpass
 
 menuAux.menuLogin()
 
 
 usuario = input("Digite seu usuario: ")
-senha = input("Digite sua senha: ")
+senha = getpass("Digite sua senha: ")
 
 
 

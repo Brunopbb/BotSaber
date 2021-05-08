@@ -1,11 +1,11 @@
 import pandas as pd
-from datetime import date
+
 
 class Planilha:
 
-    def __init__(self, dicionario):
+    def __init__(self, dicionario, data):
         self.dicionario = dicionario
-        self.data = date.today()
+        self.data = data
 
     def getItemsDict(self):
     
@@ -26,6 +26,8 @@ class Planilha:
 
     def save(self):
 
+        self.formatData()
+
         nomeArquivo = self.dicionario[0]["Turma"] + " " + str(self.data) + ".xlsx"
 
         self.gerarDataFrame().to_excel(nomeArquivo, index=True)
@@ -37,5 +39,16 @@ class Planilha:
         data = {"Nome": keys[1:], "Situação": values[1:], "Turma": values[0], "Data": str(self.data)}
 
         return data
+
+    def formatData(self):
+
+        data = list(self.data)
+
+        for i in range(len(data)):
+            if data[i] == '/':
+                data[i] = '-'
+        data = ''.join(data)
+        self.data = data
+
 
 

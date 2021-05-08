@@ -9,7 +9,12 @@ def menuEntrada():
     print("#################################################")
     time.sleep(2)
 
+def menuData():
 
+    os.system("cls||clear")
+    print("#################################################")
+    print("INFORME A DATA DA AULA (dd/mm/aaaa): ")
+    print("#################################################")
 
 def menuLogin():
 
@@ -26,6 +31,12 @@ def menuSave():
     print("#################################################")
     return op
 
+def menuJust():
+
+    os.system('cls||clear')
+    print("#################################################")
+    print("ADICIONE A JUSTIFICATIVA DA AULA: ")
+    print("#################################################")
 
 
 def menuMenuPrincipal():
@@ -34,7 +45,8 @@ def menuMenuPrincipal():
     op = input("DESEJA USAR OS REGISTROS DE FALTAS EM OUTRA TURMA? SIM(S), NÃO(N): ").upper()
     print("##########################################################################")
     return op
-    
+
+
 
 
 
